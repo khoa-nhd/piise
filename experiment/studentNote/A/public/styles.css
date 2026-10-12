@@ -1,0 +1,150 @@
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --border: #dcdfe5;
+  --text: #1c2230;
+  --muted: #6b7385;
+  --accent: #2f5fd0;
+  --accent-text: #ffffff;
+  --danger: #c0392b;
+  --selected: #e8eefc;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14171d;
+    --surface: #1d2129;
+    --border: #323846;
+    --text: #e6e9ef;
+    --muted: #98a0b3;
+    --accent: #6f95f0;
+    --accent-text: #10131a;
+    --danger: #ef7a6d;
+    --selected: #283452;
+  }
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2 { margin: 0; line-height: 1.2; }
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.15rem; }
+
+input, textarea, select, button {
+  font: inherit;
+  color: inherit;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.45rem 0.7rem;
+}
+
+input, textarea, select { width: 100%; }
+input:focus, textarea:focus, select:focus, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+button { cursor: pointer; white-space: nowrap; }
+button:hover { border-color: var(--accent); }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+button.danger { color: var(--danger); }
+button.danger:hover { border-color: var(--danger); }
+
+label { display: grid; gap: 0.25rem; font-size: 0.9rem; color: var(--muted); }
+label input, label select { color: var(--text); }
+
+.muted { color: var(--muted); font-size: 0.9rem; }
+.error { color: var(--danger); margin: 0; min-height: 1.4em; font-size: 0.9rem; }
+.spacer { flex: 1; }
+.pad { padding: 0 1rem; }
+.center { display: grid; place-items: center; }
+.toolbar { display: flex; align-items: center; gap: 0.5rem; }
+
+.card {
+  display: grid;
+  gap: 0.9rem;
+  width: min(22rem, 100%);
+  padding: 1.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.card p { margin: 0; }
+
+.login { min-height: 100%; display: grid; place-items: center; padding: 1rem; }
+
+#app-view { height: 100%; display: flex; flex-direction: column; }
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.topbar nav { display: flex; gap: 0.25rem; }
+.tab { border-color: transparent; background: none; }
+.tab.active { background: var(--selected); }
+
+.notes { flex: 1; min-height: 0; display: grid; grid-template-columns: 20rem 1fr; }
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-height: 0;
+  padding-top: 0.75rem;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+}
+.sidebar > .toolbar, .sidebar > select { margin: 0 0.75rem; width: auto; }
+
+#note-list { list-style: none; margin: 0; padding: 0; overflow-y: auto; flex: 1; }
+#note-list li { border-top: 1px solid var(--border); }
+#note-list button {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  text-align: left;
+  background: none;
+  border: none;
+  border-radius: 0;
+}
+#note-list button.active { background: var(--selected); }
+#note-list .title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+#note-list .sub { color: var(--muted); font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; }
+
+.editor { display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem 1.25rem; min-width: 0; min-height: 0; }
+.editor.center { display: grid; }
+#note-title { font-size: 1.25rem; font-weight: 600; }
+#note-content { flex: 1; resize: none; min-height: 12rem; }
+
+.users { padding: 1.25rem; max-width: 60rem; width: 100%; margin: 0 auto; display: grid; gap: 1rem; }
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 0.6rem 0.9rem; text-align: left; white-space: nowrap; }
+th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+tbody tr { border-top: 1px solid var(--border); }
+td:last-child { text-align: right; }
+td button + button { margin-left: 0.4rem; }
+
+dialog { border: none; padding: 0; background: none; color: inherit; }
+dialog::backdrop { background: rgb(0 0 0 / 0.45); }
+
+@media (max-width: 720px) {
+  .notes { grid-template-columns: 1fr; grid-template-rows: minmax(10rem, 40%) 1fr; }
+  .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
+  #whoami { display: none; }
+}

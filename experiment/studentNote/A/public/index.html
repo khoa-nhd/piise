@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Notes</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="login-view" class="login" hidden>
+    <form id="login-form" class="card">
+      <h1>Student Notes</h1>
+      <p class="muted">Sign in to your account</p>
+      <label>Username
+        <input name="username" autocomplete="username" required autofocus>
+      </label>
+      <label>Password
+        <input name="password" type="password" autocomplete="current-password" required>
+      </label>
+      <p id="login-error" class="error" role="alert"></p>
+      <button class="primary" type="submit">Sign in</button>
+    </form>
+  </main>
+
+  <div id="app-view" hidden>
+    <header class="topbar">
+      <strong>Student Notes</strong>
+      <nav id="tabs" hidden>
+        <button data-tab="notes" class="tab active">Notes</button>
+        <button data-tab="users" class="tab">Users</button>
+      </nav>
+      <span class="spacer"></span>
+      <span id="whoami" class="muted"></span>
+      <button id="logout">Sign out</button>
+    </header>
+
+    <section id="notes-view" class="notes">
+      <aside class="sidebar">
+        <div class="toolbar">
+          <input id="search" type="search" placeholder="Search notes…" aria-label="Search notes">
+          <button id="new-note" class="primary">New</button>
+        </div>
+        <select id="owner-filter" aria-label="Filter by owner" hidden></select>
+        <ul id="note-list"></ul>
+        <p id="note-empty" class="muted pad" hidden>No notes found.</p>
+      </aside>
+
+      <form id="note-form" class="editor" hidden>
+        <input id="note-title" maxlength="200" placeholder="Title" aria-label="Title" required>
+        <textarea id="note-content" maxlength="20000" placeholder="Write your note…" aria-label="Content"></textarea>
+        <div class="toolbar">
+          <span id="note-meta" class="muted"></span>
+          <span class="spacer"></span>
+          <span id="note-status" class="muted" role="status"></span>
+          <button id="note-delete" type="button" class="danger">Delete</button>
+          <button class="primary" type="submit">Save</button>
+        </div>
+      </form>
+      <p id="editor-empty" class="editor muted center">Select a note or create a new one.</p>
+    </section>
+
+    <section id="users-view" class="users" hidden>
+      <div class="toolbar">
+        <h2>Users</h2>
+        <span class="spacer"></span>
+        <button id="new-user" class="primary">Add user</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Username</th><th>Full name</th><th>Role</th><th>Notes</th><th>Created</th><th></th></tr>
+          </thead>
+          <tbody id="user-rows"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <dialog id="user-dialog">
+    <form id="user-form" class="card">
+      <h2 id="user-dialog-title">Add user</h2>
+      <label>Username
+        <input name="username" required pattern="[a-zA-Z0-9_.]{3,32}" title="3-32 letters, digits, _ or .">
+      </label>
+      <label>Full name
+        <input name="full_name" required maxlength="100">
+      </label>
+      <label>Role
+        <select name="role">
+          <option value="student">Student</option>
+          <option value="admin">Admin</option>
+        </select>
+      </label>
+      <label><span id="password-label">Password</span>
+        <input name="password" type="password" minlength="8" autocomplete="new-password">
+      </label>
+      <p id="user-error" class="error" role="alert"></p>
+      <div class="toolbar">
+        <span class="spacer"></span>
+        <button type="button" id="user-cancel">Cancel</button>
+        <button class="primary" type="submit">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Student Notes</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Student Notes</h1>
+      <div id="session" hidden>
+        <span id="whoami"></span>
+        <button id="logout" type="button">Log out</button>
+      </div>
+    </header>
+
+    <p id="message" role="status" hidden></p>
+
+    <main id="auth-view" hidden>
+      <form id="login-form" autocomplete="on">
+        <h2>Log in</h2>
+        <label>Username <input name="username" required maxlength="32" autocomplete="username" /></label>
+        <label>Password <input name="password" type="password" required maxlength="128" autocomplete="current-password" /></label>
+        <button>Log in</button>
+      </form>
+      <form id="register-form" autocomplete="off">
+        <h2>Register as a student</h2>
+        <label>Username <input name="username" required minlength="3" maxlength="32" pattern="[A-Za-z0-9_.\-]+" /></label>
+        <label>Password (10+ characters) <input name="password" type="password" required minlength="10" maxlength="128" autocomplete="new-password" /></label>
+        <button>Register</button>
+      </form>
+    </main>
+
+    <main id="app-view" hidden>
+      <section>
+        <h2 id="note-form-heading">New note</h2>
+        <form id="note-form">
+          <label>Title <input name="title" required maxlength="200" /></label>
+          <label>Content <textarea name="content" rows="6" maxlength="10000"></textarea></label>
+          <button>Save</button>
+          <button id="note-cancel" type="button" hidden>Cancel edit</button>
+        </form>
+      </section>
+
+      <section>
+        <h2>My notes</h2>
+        <ul id="notes" class="cards"></ul>
+      </section>
+
+      <section id="admin-view" hidden>
+        <h2>Admin: users</h2>
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Username</th><th>Role</th><th>Created</th><th></th></tr>
+          </thead>
+          <tbody id="users"></tbody>
+        </table>
+        <form id="user-form" autocomplete="off">
+          <h3>Create user</h3>
+          <label>Username <input name="username" required minlength="3" maxlength="32" /></label>
+          <label>Password <input name="password" type="password" required minlength="10" maxlength="128" autocomplete="new-password" /></label>
+          <label>Role
+            <select name="role">
+              <option value="student">student</option>
+              <option value="admin">admin</option>
+            </select>
+          </label>
+          <button>Create</button>
+        </form>
+
+        <h2>Admin: all notes</h2>
+        <ul id="all-notes" class="cards"></ul>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

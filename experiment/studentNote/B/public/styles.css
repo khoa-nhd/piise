@@ -1,0 +1,119 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 16px;
+  color: #1c2430;
+  background: #f5f6f8;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+h1 {
+  font-size: 1.5rem;
+}
+h2 {
+  font-size: 1.15rem;
+  margin-top: 28px;
+}
+form,
+.cards li {
+  background: #fff;
+  border: 1px solid #d9dde3;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+form h2,
+form h3 {
+  margin-top: 0;
+}
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+input,
+textarea,
+select {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  font: inherit;
+  border: 1px solid #b9c0ca;
+  border-radius: 6px;
+}
+td select {
+  width: auto;
+  margin: 0;
+}
+button {
+  font: inherit;
+  padding: 7px 14px;
+  border: 1px solid #2b5cd6;
+  border-radius: 6px;
+  background: #2b5cd6;
+  color: #fff;
+  cursor: pointer;
+}
+button.secondary {
+  background: #fff;
+  color: #2b5cd6;
+}
+button.danger {
+  background: #fff;
+  border-color: #c0392b;
+  color: #c0392b;
+}
+.cards {
+  list-style: none;
+  padding: 0;
+}
+.cards h3 {
+  margin: 0 0 4px;
+  overflow-wrap: anywhere;
+}
+.cards pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: inherit;
+  margin: 8px 0;
+}
+.meta {
+  color: #5d6875;
+  font-size: 0.8rem;
+}
+.actions {
+  display: flex;
+  gap: 8px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  margin-bottom: 12px;
+}
+th,
+td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #d9dde3;
+  font-size: 0.9rem;
+}
+#message {
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: #e8f0ff;
+}
+#message.error {
+  background: #fdeaea;
+  color: #8e241a;
+}
