@@ -1,0 +1,16 @@
+{
+  "_comment": "Merge this into your APP repo's .claude/settings.json (not the framework's). Replace <TTF_HOME> with the absolute path to the framework repo. This runs the static scanner on every file Claude writes/edits; HIGH/CRITICAL findings are fed back to Claude to fix immediately. Remove the hook anytime to disable.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"<TTF_HOME>/integrations/ttf_hook.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ttf.local/schema/finding.schema.json",
+  "title": "Finding",
+  "description": "One vulnerability carried through the Threat Thinking Loop.",
+  "type": "object",
+  "required": ["id", "title", "vuln_class"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "description": "Stable id, e.g. F-001" },
+    "title": { "type": "string" },
+    "vuln_class": { "type": "string", "description": "e.g. Broken Object Level Authorization" },
+    "severity": { "enum": ["INFO", "LOW", "MEDIUM", "HIGH", "CRITICAL"], "default": "MEDIUM" },
+    "exploitability": {
+      "enum": ["POTENTIAL", "PLAUSIBLE", "CONFIRMED", "BLOCKED"],
+      "default": "POTENTIAL",
+      "description": "POTENTIAL=hypothesis, CONFIRMED=reproduced, BLOCKED=verified fixed"
+    },
+    "attacker": { "enum": ["EXTERNAL", "AUTHENTICATED", "INSIDER", "PRIVILEGED"], "default": "AUTHENTICATED" },
+    "entry_point": { "type": "string" },
+    "hypothesis": { "type": "string" },
+    "evidence": { "type": "string", "description": "Sanitized/redacted — no real PII, secrets or tokens" },
+    "exposure": { "type": "array", "items": { "$ref": "#/$defs/assetExposure" } },
+    "attack_path": { "oneOf": [{ "$ref": "#/$defs/attackPath" }, { "type": "null" }] },
+    "root_cause": { "type": "string" },
+    "invariant": { "type": "string", "description": "The security rule that must always hold" },
+    "remediation": { "type": "string" },
+    "reattack": { "$ref": "#/$defs/reAttack" },
+    "status": { "enum": ["OPEN", "FIXED", "RESOLVED", "ACCEPTED"], "default": "OPEN" },
+    "tags": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "assetExposure": {
+      "type": "object",
+      "required": ["asset_type"],
+      "additionalProperties": false,
+      "properties": {
+        "asset_type": { "type": "string", "description": "e.g. user_profile, order, email, secret" },
+        "accessible": { "type": "integer", "minimum": 0, "default": 0 },
+        "total": { "type": ["integer", "null"], "minimum": 0 },
+        "sensitive": { "type": "boolean", "default": false },
+        "note": { "type": "string" }
+      }
+    },
+    "attackStep": {
+      "type": "object",
+      "required": ["kind", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "enum": ["entry", "weakness", "boundary", "resource", "asset"] },
+        "label": { "type": "string" }
+      }
+    },
+    "attackPath": {
+      "type": "object",
+      "required": ["id", "entry_point"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "entry_point": { "type": "string" },
+        "steps": { "type": "array", "items": { "$ref": "#/$defs/attackStep" } },
+        "impact": { "type": "string" }
+      }
+    },
+    "reAttack": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "original_blocked": { "type": ["boolean", "null"] },
+        "variants": { "type": "array", "items": { "$ref": "#/$defs/attackResult" } },
+        "regressions": { "type": "array", "items": { "$ref": "#/$defs/attackResult" } }
+      }
+    },
+    "attackResult": {
+      "type": "object",
+      "required": ["label"],
+      "properties": {
+        "label": { "type": "string" },
+        "blocked": { "type": ["boolean", "null"] },
+        "note": { "type": "string" }
+      }
+    }
+  }
+}

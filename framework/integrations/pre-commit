@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# TTF pre-commit hook — block commits that introduce HIGH/CRITICAL static findings.
+# Install: copy to <app>/.git/hooks/pre-commit  &&  chmod +x .git/hooks/pre-commit
+# Requires: `ttf` on PATH (pip install -e <framework>) OR set TTF_HOME and use python -m.
+
+set -euo pipefail
+
+TMP="$(mktemp -d)"
+OUT="$TMP/assessment.json"
+
+if command -v ttf >/dev/null 2>&1; then
+  ttf scan . --out "$OUT" >/dev/null 2>&1 || true
+elif [ -n "${TTF_HOME:-}" ]; then
+  PYTHONPATH="$TTF_HOME/src" python -m ttf scan . --out "$OUT" >/dev/null 2>&1 || true
+else
+  echo "TTF pre-commit: 'ttf' not found and TTF_HOME unset — skipping scan." >&2
+  exit 0
+fi
+
+# count HIGH/CRITICAL findings in the generated assessment
+COUNT="$(python - "$OUT" <<'PY'
+import json, sys
+try:
+    data = json.load(open(sys.argv[1], encoding="utf-8"))
+except Exception:
+    print(0); raise SystemExit
+n = sum(1 for f in data.get("findings", [])
+        if f.get("severity") in ("HIGH", "CRITICAL"))
+print(n)
+PY
+)"
+
+rm -rf "$TMP"
+
+if [ "$COUNT" -gt 0 ]; then
+  echo "TTF pre-commit: $COUNT HIGH/CRITICAL static finding(s) detected." >&2
+  echo "Run 'ttf scan . --out a.json && ttf report a.json' to review, fix the root cause, or commit with --no-verify to override." >&2
+  exit 1
+fi
+exit 0

@@ -1,0 +1,55 @@
+{
+  "app": "Demo App (local)",
+  "base_url": "http://localhost:8777",
+  "scope_ack": true,
+  "attacker": "A",
+  "auth": {
+    "login_url": "/api/login",
+    "method": "POST",
+    "username_field": "username",
+    "password_field": "password",
+    "token_field": "token",
+    "auth_header": "Authorization",
+    "auth_scheme": "Bearer",
+    "accounts": {
+      "A": { "username": "testA", "password": "passA", "owns_ids": [101] },
+      "B": { "username": "testB", "password": "passB", "owns_ids": [201, 202] }
+    }
+  },
+  "targets": [
+    {
+      "name": "orders",
+      "type": "idor",
+      "url_template": "/api/orders/{id}",
+      "method": "GET",
+      "asset_type": "order",
+      "sensitive": true,
+      "total": 3,
+      "ids": [201, 202]
+    },
+    {
+      "name": "admin-metrics",
+      "type": "function-authz",
+      "url": "/api/admin/metrics",
+      "method": "GET",
+      "asset_type": "admin"
+    },
+    {
+      "name": "promote-self",
+      "type": "mass-assignment",
+      "url": "/api/users/{id}",
+      "method": "PATCH",
+      "id": 1,
+      "inject": { "role": "admin" },
+      "verify_key": "role",
+      "verify_value": "admin"
+    },
+    {
+      "name": "internal-health",
+      "type": "auth-bypass",
+      "url": "/api/internal/health",
+      "method": "GET",
+      "asset_type": "internal"
+    }
+  ]
+}

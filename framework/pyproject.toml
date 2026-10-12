@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ttf-threat-thinking"
+version = "0.1.0"
+description = "Threat Thinking Framework — attacker-mindset loop for vibe coding (scan, probe, measure, root-cause fix, re-attack, report)."
+requires-python = ">=3.11"
+readme = "README.md"
+
+[project.scripts]
+ttf = "ttf.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

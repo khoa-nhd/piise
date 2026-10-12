@@ -1,0 +1,25 @@
+{
+  "_comment": "Copy to .ttf/scope.json and edit. This declares the ONLY systems you authorize the loop (and your AI pair) to test. Testing anything outside this is out of scope.",
+  "owner": "cuongnp1112@gmail.com",
+  "authorized": true,
+  "statement": "I own or am actively developing the targets below and authorize defensive self-assessment against them.",
+  "in_scope": {
+    "hosts": ["localhost", "127.0.0.1", "staging.my-app.example (my own staging)"],
+    "apps": ["my-vibe-coded-app (local + my staging tenant)"],
+    "data": "test accounts and seeded/fixture data only"
+  },
+  "out_of_scope": {
+    "hosts": ["any production system", "any third-party or shared service", "anything I do not own or control"],
+    "actions": [
+      "distributing exploit payloads",
+      "attacking systems I do not own",
+      "evading bot-detection / CAPTCHA",
+      "using real user data, real credentials, secrets or tokens",
+      "any destructive action (delete/overwrite of real data)"
+    ]
+  },
+  "rules": [
+    "Exploit = controlled proof on my own instance using test data; redact all evidence.",
+    "If an action would fall outside this scope, stop and reconsider instead of proceeding."
+  ]
+}

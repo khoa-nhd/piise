@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ttf.local/schema/assessment.schema.json",
+  "title": "Assessment",
+  "description": "Top-level container for one Threat Thinking assessment cycle.",
+  "type": "object",
+  "required": ["app"],
+  "additionalProperties": false,
+  "properties": {
+    "app": { "type": "string" },
+    "cycle": { "type": "integer", "minimum": 1, "default": 1 },
+    "scope": { "type": "string", "description": "Authorized scope, in words" },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "https://ttf.local/schema/finding.schema.json" }
+    },
+    "previous_state": {
+      "oneOf": [
+        { "$ref": "https://ttf.local/schema/security-state.schema.json" },
+        { "type": "null" }
+      ]
+    }
+  }
+}

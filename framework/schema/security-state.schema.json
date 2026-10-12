@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ttf.local/schema/security-state.schema.json",
+  "title": "SecurityState",
+  "description": "A point-in-time snapshot used to show progress across loop cycles.",
+  "type": "object",
+  "required": ["version"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "string", "description": "e.g. cycle-4" },
+    "vulnerabilities": { "type": "integer", "minimum": 0, "default": 0 },
+    "confirmed_exploits": { "type": "integer", "minimum": 0, "default": 0 },
+    "critical_assets_reachable": { "type": "integer", "minimum": 0, "default": 0 },
+    "attack_paths": { "type": "integer", "minimum": 0, "default": 0 },
+    "risk": { "type": "number", "minimum": 0, "default": 0 }
+  }
+}

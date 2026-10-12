@@ -1,0 +1,102 @@
+{
+  "app": "Vibe-coded E-commerce App",
+  "cycle": 4,
+  "scope": "Authorized self-assessment of my own staging instance (localhost + my test tenant). No third-party systems touched.",
+  "previous_state": {
+    "version": "cycle-3",
+    "vulnerabilities": 12,
+    "confirmed_exploits": 7,
+    "critical_assets_reachable": 4,
+    "attack_paths": 18,
+    "risk": 28.5
+  },
+  "findings": [
+    {
+      "id": "F-001",
+      "title": "Other users' orders readable by ID manipulation",
+      "vuln_class": "Broken Object Level Authorization (IDOR)",
+      "severity": "HIGH",
+      "exploitability": "BLOCKED",
+      "attacker": "AUTHENTICATED",
+      "entry_point": "GET /api/orders/{id}",
+      "hypothesis": "As a normal logged-in user, changing {id} in the orders endpoint may return orders that belong to other customers, because authentication was checked but ownership was not.",
+      "evidence": "As test user A (id 101), requested order ids sequentially around my own. Server returned full order bodies for ids I do not own, including customer name, email and shipping address. Reproduced against my own staging tenant only; values redacted here.",
+      "exposure": [
+        {"asset_type": "user_profile", "accessible": 24, "total": 1000, "sensitive": false, "note": "names visible on orders"},
+        {"asset_type": "order", "accessible": 51, "total": 2125, "sensitive": false},
+        {"asset_type": "email", "accessible": 37, "total": null, "sensitive": true, "note": "customer PII"},
+        {"asset_type": "password", "accessible": 0, "total": null, "sensitive": true},
+        {"asset_type": "payment", "accessible": 0, "total": null, "sensitive": true}
+      ],
+      "attack_path": {
+        "id": "AP-01",
+        "entry_point": "GET /api/orders/{id}",
+        "steps": [
+          {"kind": "entry", "label": "Authenticated normal user"},
+          {"kind": "weakness", "label": "Orders API — missing ownership check"},
+          {"kind": "boundary", "label": "Crosses user trust boundary (A -> B)"},
+          {"kind": "resource", "label": "Another user's order object"},
+          {"kind": "asset", "label": "Customer email + shipping address (PII)"}
+        ],
+        "impact": "Read access to other customers' order and contact information."
+      },
+      "root_cause": "Authorization was treated as equal to authentication. There is no centralized\nownership/policy layer; each controller re-implements access checks ad hoc, and\nthe orders controller simply forgot to compare order.user_id to the caller.",
+      "invariant": "A user must never read or modify another user's private resource unless an explicit policy grants it.",
+      "remediation": "Add a central authorization policy enforced in the service layer (not per-route):\nevery object fetch goes through `authorize(actor, action, resource)` which checks\nownership/role. Orders, profiles, messages and invoices all routed through it.\nUnit + integration tests assert 403 for cross-tenant access.",
+      "reattack": {
+        "original_blocked": true,
+        "variants": [
+          {"label": "id+1 / id-1 sequential", "blocked": true},
+          {"label": "id=0 and id=-1", "blocked": true},
+          {"label": "?id= query vs path param", "blocked": true},
+          {"label": "PUT body id override", "blocked": true},
+          {"label": "different HTTP method (HEAD)", "blocked": true}
+        ],
+        "regressions": [
+          {"label": "GET /api/profile/{id}", "blocked": true},
+          {"label": "GET /api/invoices/{id}", "blocked": true},
+          {"label": "GET /api/messages/{id}", "blocked": false, "note": "see F-002"}
+        ]
+      },
+      "status": "RESOLVED",
+      "tags": ["idor", "authz", "pii"]
+    },
+    {
+      "id": "F-002",
+      "title": "Messages endpoint still allows cross-user access (regression sibling)",
+      "vuln_class": "Broken Object Level Authorization (IDOR)",
+      "severity": "HIGH",
+      "exploitability": "CONFIRMED",
+      "attacker": "AUTHENTICATED",
+      "entry_point": "GET /api/messages/{id}",
+      "hypothesis": "The same 'authenticated == authorized' assumption that caused F-001 likely affects sibling endpoints. Messages was not yet migrated to the central policy.",
+      "evidence": "After fixing orders, re-ran the attack class across sibling endpoints. /api/messages/{id} still returns other users' message threads. Reproduced on my own staging tenant.",
+      "exposure": [
+        {"asset_type": "message", "accessible": 63, "total": 4200, "sensitive": true, "note": "private DMs"},
+        {"asset_type": "email", "accessible": 14, "total": null, "sensitive": true}
+      ],
+      "attack_path": {
+        "id": "AP-02",
+        "entry_point": "GET /api/messages/{id}",
+        "steps": [
+          {"kind": "entry", "label": "Authenticated normal user"},
+          {"kind": "weakness", "label": "Messages API — not migrated to central policy"},
+          {"kind": "boundary", "label": "Crosses user trust boundary"},
+          {"kind": "resource", "label": "Another user's message thread"},
+          {"kind": "asset", "label": "Private message content (sensitive)"}
+        ],
+        "impact": "Read access to other users' private messages."
+      },
+      "root_cause": "Same root cause as F-001: no uniform enforcement point. Fixing one endpoint\ndid not fix the class until every sibling routes through the policy layer.",
+      "invariant": "A user must never read or modify another user's private resource unless an explicit policy grants it.",
+      "remediation": "Route the messages service through the same `authorize()` policy introduced for\nF-001; add the cross-tenant 403 test for messages to the regression suite.",
+      "reattack": {
+        "original_blocked": null,
+        "variants": [],
+        "regressions": []
+      },
+      "status": "OPEN",
+      "tags": ["idor", "authz", "regression"]
+    }
+  ]
+}
